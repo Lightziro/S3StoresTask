@@ -1,0 +1,28 @@
+.cart-input {
+    display: block;
+    box-sizing: border-box;
+    height: 38px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    font-size: 16px;
+    padding: 0 10px;
+    outline: none;
+}
+
+.cart-input:focus {
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(0, 124, 214, 0.3);
+    border-color: #007CD6;
+    outline: none;
+}
+.btn-add-item,
+.btn-search-item{
+    text-align: center;
+    margin: 16px 0;
+    border: none;
+    width: 100%;
+    justify-content: center;
+    color: white;
+    padding: 10px 5px;
+    background: #007dfd;
+}
