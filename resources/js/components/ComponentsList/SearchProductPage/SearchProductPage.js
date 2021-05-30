@@ -50,8 +50,7 @@ export default function SearchProductPage() {
                     </Box>
                     <Grid container alignItems='center' justify='center' direction='row'>
                         {
-                            productsList.map((product, i) => <ProductCard key={i} {...product}/>
-                            )
+                            productsList.map((product, i) => <ProductCard key={i} {...product}/>)
                         }
                     </Grid>
                     <Box mt={3}>
