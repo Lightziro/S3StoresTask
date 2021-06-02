@@ -1,15 +1,13 @@
 import React from "react";
 import {Box, Container, Grid} from "@material-ui/core";
-import {NavLink} from "react-router-dom";
 import './style.css'
 import NavItem from "./NavItem";
 
-export default function Navigator(props) {
+export default function Navigator() {
     const navItem = [
         { title: 'Список товаров', link: '/'},
         { title: 'Корзина', link: '/Cart' },
         { title: 'Таблица продуктов', link: '/Table'},
-        { title: 'Поиск', link: '/Search'},
         { title: 'Добавить товар', link: '/AddProduct'},
     ];
 

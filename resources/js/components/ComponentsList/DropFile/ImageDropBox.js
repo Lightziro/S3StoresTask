@@ -15,7 +15,7 @@ export default function ImageDropBox(props) {
                         <img src={getPhoto(props.picture)} className={'image-zone'}></img>
                     </div>
                     <Button fullWidth variant="contained" color="secondary"
-                            onClick={() => props.setPicture('image', '')}
+                            onClick={() => props.setPicture(false, {image: ''})}
                             startIcon={<DeleteIcon/>}
                     >
                         Удалить фото

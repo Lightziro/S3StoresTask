@@ -1,14 +1,13 @@
 import React from "react";
 import Dropzone from "react-dropzone";
-import {Box, Button, Grid, Paper, Typography} from "@material-ui/core";
+import {Box, Button, Grid, Typography} from "@material-ui/core";
 import './style.css';
 import ImageDropBox from "./ImageDropBox";
 
 export default function DropFile(props) {
-    const inputFile = React.useRef();
 
     const fileHandler = (file) => {
-        props.setPicture('image', file);
+        props.setPicture(false, {image: file});
     }
 
     return (<Dropzone maxFiles={1}
@@ -16,12 +15,11 @@ export default function DropFile(props) {
                       accept='image/jpeg, image/png'
                       name='image'
                       noDrag={true}
-                      ref={inputFile}
     >
         {({getRootProps, getInputProps}) => (
             <section>
                 <div className='drop-zone' {...getRootProps()}>
-                    {!props.picture && <input {...props.inputRegister} {...getInputProps()} />}
+                    {!props.picture && <input {...getInputProps()} />}
                     <Box width='100%'>
                         <Typography variant='h6'
                                     align={"center"}>{!props.picture ? 'Выберите фотографию' : 'Фотография продукта'}</Typography>

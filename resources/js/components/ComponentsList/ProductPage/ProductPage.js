@@ -9,21 +9,17 @@ import {closeAlert} from "../../../redux/actions/alertAction";
 
 function ProductPage(props) {
     const getAllProduct = () => {
-        axios.get('/api/product/all')
-            .then(data => {
-                store.dispatch(getProduct(data.data))
-            })
+        if (!props.products.length) {
+            axios.get('/api/product/all')
+                .then(data => {
+                    store.dispatch(getProduct(data.data))
+                })
+        }
     }
 
     useEffect(() => {
         getAllProduct();
     }, [])
-
-
-    const checkCart = (id) => {
-        const checkInCart = store.getState().cartReducer.productCart.find(product => id === product.product_id)
-        return checkInCart ? true : false
-    }
 
     return (
         <Container>
@@ -33,10 +29,8 @@ function ProductPage(props) {
                         props.products.length
                             ? props.products.map((product, i) => {
                                 return <ProductCard id={i}
-                                                    inCart={!checkCart(product.product_id)}
                                                     {...product}
                                                     key={i}
-                                                    eventCheckCart={checkCart}
                                                     type='watch'
                                 ></ProductCard>
                             })

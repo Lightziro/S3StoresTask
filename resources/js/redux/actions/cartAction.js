@@ -2,8 +2,7 @@ import {
     ADD_PRODUCT,
     ADD_PRODUCT_CART, DELETE_PRODUCT,
     DELETE_PRODUCT_CART,
-    GET_PRODUCT,
-    UPDATE_COUNT_PRODUCT_CART, UPDATE_PRODUCT
+    GET_PRODUCT, UPDATE_PRODUCT
 } from "../typeAction";
 import store from "../store";
 import {showSuccess} from "./alertAction";
@@ -42,15 +41,6 @@ export const updateProduct = (product) => {
     return {
         type: UPDATE_PRODUCT,
         product,
-    }
-}
-
-export const updateCountProductCart = (id, count) => {
-    store.dispatch(showSuccess('Вы успешно добавили 1 шт. товара в корзину'))
-    return {
-        type: UPDATE_COUNT_PRODUCT_CART,
-        id,
-        count,
     }
 }
 export const removeProduct = (id) => {

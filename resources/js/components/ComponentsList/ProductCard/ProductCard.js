@@ -10,7 +10,7 @@ import {
 import store from "../../../redux/store";
 import './style.css';
 import ButtonWatch from "./ButtonWatch";
-import {addToCart, removeCart, updateCountProductCart} from "../../../redux/actions/cartAction";
+import {addToCart, removeCart} from "../../../redux/actions/cartAction";
 import {showError} from "../../../redux/actions/alertAction";
 
 export default function ProductCard(props) {
@@ -23,15 +23,11 @@ export default function ProductCard(props) {
         store.dispatch(removeCart(props.product_id))
     }
     const addCartHandler = () => {
-
-        if (props.eventCheckCart(props.product_id)) {
-            store.dispatch(showError('Вы не можете добавить товар в корзину, так-как он уже есть в корзине'));
-            return;
+        const product = store.getState().cartReducer.products.filter(item => item.product_id === props.product_id).pop();
+        if (product.quantity === 0) {
+            return store.dispatch(showError('Товар отсутствует в магазине, ожидайте пополнения'));
         }
         store.dispatch(addToCart(props.product_id, 1));
-    }
-    const updateCartHandler = () => {
-        store.dispatch(updateCountProductCart(props.product_id, 1));
     }
 
     return (
@@ -60,14 +56,16 @@ export default function ProductCard(props) {
                         </Typography>
                     </CardContent>
                 </CardActionArea>
-                <CardActions>
-                    <ButtonWatch type={props.type}
-                                 eventDelete={buttonCartDeleteHandler}
-                                 eventAddCount={updateCartHandler}
-                                 eventAddCart={addCartHandler}
-                                 inCart={props.inCart}
-                    />
-                </CardActions>
+                {
+                    props.quantity >= 1 &&
+                    <CardActions>
+                        <ButtonWatch type={props.type}
+                                     eventDelete={buttonCartDeleteHandler}
+                                     eventAddCart={addCartHandler}
+                                     inCart={props.inCart}
+                        />
+                    </CardActions>
+                }
             </Card>
         </div>
     );

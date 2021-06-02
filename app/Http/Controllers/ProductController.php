@@ -17,11 +17,11 @@ class ProductController extends Controller
     public function addProduct(Request $request)
     {
         $product = new Product();
-        $imgPath = $request->file('image')->store('product-images', 'public');
+        $img_path = $request->file('image')->store('product-images', 'public');
 
         $product->name = (string)$request->name;
         $product->description = (string)$request->description;
-        $product->image = $imgPath;
+        $product->image = $img_path;
         $product->price = (double)$request->price;
         $product->quantity = (int)$request->quantity;
         $product->save();

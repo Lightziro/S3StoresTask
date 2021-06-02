@@ -6,23 +6,24 @@ import {useParams} from "react-router";
 import {Alert} from "@material-ui/lab";
 import {connect} from "react-redux";
 import store from "../../../redux/store";
-import {closeAlert} from "../../../redux/actions/alertAction";
+import {closeAlert, showError} from "../../../redux/actions/alertAction";
 import {addProduct, updateProduct} from "../../../redux/actions/cartAction";
-import {useForm} from "react-hook-form";
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router-dom";
+import {defaultData, getUrl, validateForm} from "./Constants";
 
 function AddProductPage(props) {
-    const {register, handleSubmit, watch, formState: {errors}, setValue} = useForm();
+    const [dataProduct, setDataProduct] = React.useState(defaultData);
     const {id} = useParams();
     const history = useHistory();
 
-    const onSubmit = data => {
-        let baseUrl = '/api/product/add';
-        if (id) {
-            baseUrl = '/api/product/update'
+    const onSubmit = () => {
+        const checkValid = validateForm(dataProduct)
+        if (typeof checkValid !== "boolean") {
+            store.dispatch(showError(checkValid));
+            return;
         }
-        const form = convertFormData(data);
-        axios.post(baseUrl, form)
+        const form = convertFormData(dataProduct);
+        axios.post(getUrl(id), form)
             .then(response => {
                 history.push('/');
                 if (id) {
@@ -38,7 +39,7 @@ function AddProductPage(props) {
                 .then(response => {
                     if (response.data) {
                         Object.keys(response.data).forEach(props => {
-                            setValue(props, response.data[props]);
+                            changeData(false, {[props]: response.data[props]});
                         })
                     }
                 });
@@ -46,6 +47,16 @@ function AddProductPage(props) {
     }, [])
     const closeAlerHandler = () => {
         store.dispatch(closeAlert());
+    }
+    const changeData = (event, obData) => {
+        if (obData) {
+            setDataProduct((prevState) => {
+                // Object.assign также будет работать
+                return { ...prevState, ...obData }
+            })
+            return;
+        }
+        setDataProduct({...dataProduct, ...{[event.target.name]: event.target.value}});
     }
 
     return (
@@ -56,36 +67,49 @@ function AddProductPage(props) {
                         Форма {id ? 'обновления' : 'добавления'} товара
                     </Typography>
                     <Typography variant='body2' align='center'>
-                        Для {id ? 'обновления' : 'добавления'} продукта должны быть заполнены поля: название, количество, фото, цена
+                        Для {id ? 'обновления' : 'добавления'} продукта должны быть заполнены поля: название,
+                        количество, фото, цена
                     </Typography>
                 </Box>
                 <Grid container justify='center' alignItems='center' direction='column'>
                     <Box width='50%'>
-                        <form onSubmit={handleSubmit(onSubmit)}>
-                            <DropFile picture={watch('image')}
-                                      setPicture={setValue}
-                                      inputRegister={{...register("image", {required: true})}}>
-                            </DropFile>
-                            <Typography variant='h6' align='left'>Наименование товара:</Typography>
-                            <input autoComplete='off' className='cart-input'
-                                   {...register("name", {required: true, minLength: 3, maxLength: 35})}
-                            />
-                            <Typography variant='h6' align='left'>Описание товара:</Typography>
-                            <textarea autoComplete='off' className='cart-input'
-                                      {...register("description", {required: false, maxLength: 500})}
-                            />
-                            <Typography align='left' variant='h6'>Количество:</Typography>
-                            <input autoComplete='off' type='number' className='cart-input'
-                                   {...register("quantity", {required: true, min: 1, max: 1000})}
-                            />
-                            <Typography align='left' variant='h6'>Цена:</Typography>
-                            <input autoComplete='off' className='cart-input'
-                                   {...register("price", {required: true, minLength: 2})}
-                            />
-                            <button type='submit' className='btn-add-item'>
-                                {id ? 'Обновить товар' : 'Добавить товар'}
-                            </button>
-                        </form>
+                        <DropFile picture={dataProduct.image}
+                                  setPicture={changeData}
+                        >
+                        </DropFile>
+                        <Typography variant='h6' align='left'>Наименование товара:</Typography>
+                        <input onChange={(event) => changeData(event)}
+                               autoComplete='off'
+                               className='cart-input'
+                               value={dataProduct.name}
+                               name='name'
+                        />
+                        <Typography variant='h6' align='left'>Описание товара:</Typography>
+                        <textarea value={dataProduct.description}
+                                  autoComplete='off'
+                                  className='cart-input'
+                                  onChange={(event) => changeData(event)}
+                                  name='description'
+                        />
+                        <Typography align='left' variant='h6'>Количество:</Typography>
+                        <input autoComplete='off'
+                               min={0}
+                               type='number'
+                               className='cart-input'
+                               onChange={(event) => changeData(event)}
+                               value={dataProduct.quantity}
+                               name='quantity'
+                        />
+                        <Typography align='left' variant='h6'>Цена:</Typography>
+                        <input autoComplete='off'
+                               onChange={(event) => changeData(event)}
+                               className='cart-input'
+                               value={dataProduct.price}
+                               name='price'
+                        />
+                        <button onClick={onSubmit} type='submit' className='btn-add-item'>
+                            {id ? 'Обновить товар' : 'Добавить товар'}
+                        </button>
                     </Box>
                 </Grid>
             </Container>

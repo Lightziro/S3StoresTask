@@ -10,11 +10,6 @@ export default function ButtonWatch(props) {
                         <button onClick={props.eventAddCart} className='btn-add-cart'>
                             Добавить в корзину
                         </button>
-                        {
-                            !props.inCart
-                                ? <button onClick={props.eventAddCount} className='btn-add-cart-count'>+1</button>
-                                : null
-                        }
                     </Grid>
                 </div>
             )
